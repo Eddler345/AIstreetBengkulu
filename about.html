@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tentang - AIstreet Bengkulu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --accent: #3b82f6;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --success: #28a745;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      padding: 18px 40px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    header .logo {
+      font-weight: 600;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.2s;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    nav a:hover {
+      border-bottom-color: white;
+    }
+
+    nav a.active {
+      border-bottom-color: white;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 25px;
+    }
+
+    .section {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      font-weight: 600;
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2 i {
+      color: var(--primary);
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-top: 0;
+      color: var(--text);
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 0;
+      margin-bottom: 0;
+      list-style-type: none;
+    }
+
+    ul li {
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 25px;
+      line-height: 1.5;
+    }
+
+    ul li:before {
+      content: "•";
+      color: var(--primary);
+      font-size: 1.5rem;
+      position: absolute;
+      left: 0;
+      top: -3px;
+    }
+
+    .team-member {
+      background-color: #f1f5fe;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--primary);
+    }
+
+    .team-member strong {
+      color: var(--primary-dark);
+    }
+
+    footer {
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 18px 20px;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      margin-top: 15px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 20px;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      gap: 8px;
+    }
+
+    .highlight-box {
+      background-color: #f1f5fe;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-map-marked-alt"></i> AIstreet Bengkulu
+    </div>
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="about.html" class="active">Tentang</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <h2><i class="fas fa-question-circle"></i> Apa Itu AIstreet Bengkulu?</h2>
+      <p>
+        <strong>AIstreet Bengkulu</strong> merupakan aplikasi web inovatif yang dirancang untuk membantu masyarakat Kota Bengkulu dalam menemukan rute tercepat serta menghindari kemacetan lalu lintas.
+      </p>
+      
+      <div class="highlight-box">
+        <p>
+         Dengan memanfaatkan data lalu lintas secara real-time dan teknologi kecerdasan buatan melalui model <strong>Random Forest Classifier</strong>, aplikasi ini mampu memberikan prediksi tingkat kemacetan secara akurat dan merekomendasikan jalur alternatif yang paling efisien.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2><i class="fas fa-users"></i> Aistreet Bengkulu</h2>
+      <ul>
+        <li class="team-member">
+          <strong>Anggota Kelompok:</strong><br>
+            Habib Eddler Marpen (G1A023025)<br>
+            Attar Zaki Al Ghifari (G1A023035)
+        </li>
+        <li class="team-member">
+          <strong>Program Studi:</strong> Teknik Informatika - Universitas Bengkulu
+        </li>
+        <li class="team-member">
+          <strong>Dosen Pembimbing:</strong> Ir. Arie Vatresia, S.T., M.T.I., Ph.D
+        </li>
+        <li class="team-member">
+          <strong>Teknologi Utama:</strong> Python (FastAPI), JavaScript, Leaflet.js, Random Forest Model, HTML/CSS
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2><i class="fas fa-bullseye"></i> Tujuan Aistreet Bengkulu</h2>
+      <p>
+         Proyek ini dikembangkan sebagai bagian dari implementasi inisiatif <strong>Smart City</strong> yang bertujuan meningkatkan kualitas mobilitas perkotaan secara lebih cerdas, efisien, dan berkelanjutan bagi warga Kota Bengkulu.
+      </p>
+      <p>
+        Dengan memanfaatkan kecerdasan buatan, sistem kami memberikan rekomendasi rute optimal berdasarkan analisis kondisi lalu lintas terkini dan prediksi kemacetan.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2><i class="fab fa-github"></i> Kode Sumber</h2>
+      <p>
+        Proyek ini bersifat open-source dan tersedia untuk dikembangkan lebih lanjut:
+      </p>
+      <a href="#" class="btn" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i> Kunjungi GitHub Aistreet Bengkulu
+      </a>
+    </section>
+
+
+  <footer>
+    &copy; 2025 AIstreet Bengkulu
+  </footer>
+</body>
+</html>

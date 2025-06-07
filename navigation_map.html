@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        #map-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        #map_7032d3261294eb65dc0b8e3df8f84131 {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .leaflet-container {
+            font-size: 1rem;
+            background-color: #e8f4f8;
+        }
+        
+        /* Info Panel */
+        .info-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 320px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 9999;
+            border-top: 4px solid #00695c;
+            transition: all 0.3s ease;
+        }
+        
+        .info-panel:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00695c;
+        }
+        
+        .info-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .location-info {
+            margin-bottom: 15px;
+        }
+        
+        .location-item {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .location-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .start-dot {
+            background: #0F9D58;
+        }
+        
+        .end-dot {
+            background: #DB4437;
+        }
+        
+        .location-text {
+            font-size: 14px;
+        }
+        
+        .distance-panel {
+            background: linear-gradient(135deg, #00695c, #00897b);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            color: white;
+        }
+        
+        .distance-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .distance-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .distance-label {
+            font-size: 14px;
+        }
+        
+        .distance-value {
+            font-weight: bold;
+        }
+        
+        .transport-options {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .transport-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            color: white;
+            background: linear-gradient(135deg, #00897b, #26a69a);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .transport-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .transport-option b {
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        /* Traffic Warning */
+        .traffic-warning {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background-color: #212121;
+            color: #fdd835;
+            padding: 18px 20px;
+            border-left: 6px solid #fbc02d;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            font-size: 15px;
+            max-width: 280px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
+        }
+        
+        .warning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fbc02d;
+            margin-bottom: 8px;
+        }
+        
+        .warning-content {
+            color: #f5f5f5;
+        }
+        
+        .warning-content p {
+            margin: 4px 0;
+        }
+        
+        /* Legend */
+        .map-legend {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: white;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00695c;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 8px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        
+        .congested {
+            background-color: #FF0000;
+        }
+        
+        .main-route {
+            background-color: #4285F4;
+        }
+        
+        .alt-route {
+            background-color: #01A43F;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <div class="folium-map" id="map_7032d3261294eb65dc0b8e3df8f84131"></div>
+    </div>
+    
+    <!-- Info Panel - Redesigned -->
+<div class="info-panel" style="background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 20px; font-family: 'Segoe UI', sans-serif; max-width: 400px; margin: 20px auto; color: #333;">
+
+    <!-- Header Section -->
+    <div class="info-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
+        <div class="info-title" style="font-size: 1.4rem; font-weight: 700; color: #2c3e50;">AIstreet Bengkulu</div>
+        <div class="info-time" style="font-size: 0.9rem; color: #7f8c8d;">03:19 Sun, 08 Jun</div>
+    </div>
+    
+    <!-- Location Section -->
+    <div class="location-info" style="margin-bottom: 20px;">
+        <div class="location-item" style="display: flex; align-items: center; margin-bottom: 12px;">
+            <div class="location-dot start-dot" style="width: 12px; height: 12px; background: #e74c3c; border-radius: 50%; margin-right: 10px;"></div>
+            <div class="location-text"><b style="color: #2c3e50;">Titik Awal:</b> <span style="color: #34495e;">tebeng</span></div>
+        </div>
+        <div class="location-item" style="display: flex; align-items: center;">
+            <div class="location-dot end-dot" style="width: 12px; height: 12px; background: #2ecc71; border-radius: 50%; margin-right: 10px;"></div>
+            <div class="location-text"><b style="color: #2c3e50;">Titik Tujuan:</b> <span style="color: #34495e;">pantai</span></div>
+        </div>
+    </div>
+    
+    <!-- Distance Section -->
+    <div class="distance-panel" style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <div class="distance-item" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span class="distance-label" style="color: #7f8c8d;">Rute Utama</span>
+            <span class="distance-value" style="font-weight: 600; color: #3498db;">4930 meter</span>
+        </div>
+        <div class="distance-item" style="display: flex; justify-content: space-between;">
+            <span class="distance-label" style="color: #7f8c8d;">Rute Alternatif</span>
+            <span class="distance-value" style="font-weight: 600; color: #3498db;">5584 meter</span>
+        </div>
+    </div>
+    
+    <!-- Transport Options -->
+    <div class="transport-options" style="display: flex; justify-content: space-between; text-align: center;">
+        <div class="transport-option" style="background: #e8f4fc; border-radius: 8px; padding: 12px; width: 30%;">
+            <b style="display: block; color: #3498db; margin-bottom: 5px;">Jalan Kaki</b>
+            <span style="color: #7f8c8d; font-size: 0.9rem;">54:46 menit</span>
+        </div>
+        <div class="transport-option" style="background: #e8f4fc; border-radius: 8px; padding: 12px; width: 30%;">
+            <b style="display: block; color: #3498db; margin-bottom: 5px;">Motor</b>
+            <span style="color: #7f8c8d; font-size: 0.9rem;">09:40 menit</span>
+        </div>
+        <div class="transport-option" style="background: #e8f4fc; border-radius: 8px; padding: 12px; width: 30%;">
+            <b style="display: block; color: #3498db; margin-bottom: 5px;">Mobil</b>
+            <span style="color: #7f8c8d; font-size: 0.9rem;">10:57 menit</span>
+        </div>
+    </div>
+</div>
+    
+  <!-- Traffic Warning - Redesigned -->
+<div class="traffic-warning" style="background: linear-gradient(135deg, #fff5f5 0%, #ffecec 100%); border-left: 4px solid #ff4757; border-radius: 8px; padding: 16px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="warning-header" style="display: flex; align-items: center; margin-bottom: 12px; color: #ff4757;">
+        <i class="fas fa-traffic-light" style="margin-right: 10px; font-size: 1.2em;"></i> 
+        <strong style="font-size: 1.1em;">Informasi Lalu Lintas</strong>
+    </div>
+    <div class="warning-content" style="color: #555;">
+        <p style="margin: 8px 0; line-height: 1.5;">🚗 Rute utama bisa jadi mengalami <strong style="color: #ff4757;">kemacetan berat</strong>.</p>
+        <p style="margin: 8px 0; line-height: 1.5;">🔄 Disarankan untuk menggunakan <strong style="color: #2e86de;">rute alternatif apabila terjadi kemacetan</strong>.</p>
+    </div>
+</div>
+    
+    <!-- Map Legend -->
+    <div class="map-legend">
+        <div class="legend-title">Keterangan:</div>
+        <div class="legend-item">
+            <div class="legend-color congested"></div>
+            <div>Jalan Macet</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color main-route"></div>
+            <div>Rute Utama Lancar</div>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color alt-route"></div>
+            <div>Rute Alternatif</div>
+        </div>
+    </div>
+    
+    <script>
+        var map_7032d3261294eb65dc0b8e3df8f84131 = L.map(
+            "map_7032d3261294eb65dc0b8e3df8f84131",
+            {
+                center: [-3.7989539, 102.2839151],
+                crs: L.CRS.EPSG3857,
+                zoom: 14,
+                zoomControl: true,
+                preferCanvas: false
+            }
+        );
+
+        var tile_layer_1ef1522b8166e97f2ba78faa266c2c48 = L.tileLayer(
+            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                minZoom: 0,
+                maxZoom: 19,
+                maxNativeZoom: 19,
+                noWrap: false,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                subdomains: "abc",
+                detectRetina: false,
+                tms: false,
+                opacity: 1,
+            }
+        ).addTo(map_7032d3261294eb65dc0b8e3df8f84131);
+
+        // Start Marker
+        var marker_d484d13cc8e36d9f9a80784178a3c9aa = L.marker(
+            [-3.7989539, 102.2839151],
+            {}
+        ).addTo(map_7032d3261294eb65dc0b8e3df8f84131);
+
+        var icon_b6379b65206cd91f7bc522f5dadb2332 = L.AwesomeMarkers.icon({
+            markerColor: "green",
+            iconColor: "white",
+            icon: "flag",
+            prefix: "glyphicon",
+            extraClasses: "fa-rotate-0",
+        });
+
+        var popup_96e703f0e4520573ba41be6a5029dcd7 = L.popup({ maxWidth: "100%" });
+        var html_72a647bd59e259e29cfa313d7e3862bd = $(`<div style="width: 100%; height: 100%;">Start: tebeng</div>`)[0];
+        popup_96e703f0e4520573ba41be6a5029dcd7.setContent(html_72a647bd59e259e29cfa313d7e3862bd);
+        marker_d484d13cc8e36d9f9a80784178a3c9aa.bindPopup(popup_96e703f0e4520573ba41be6a5029dcd7);
+        marker_d484d13cc8e36d9f9a80784178a3c9aa.setIcon(icon_b6379b65206cd91f7bc522f5dadb2332);
+
+        // End Marker
+        var marker_cb04b8bd4f2cd534f5d0e0907196aba6 = L.marker(
+            [-3.7872878, 102.2491635],
+            {}
+        ).addTo(map_7032d3261294eb65dc0b8e3df8f84131);
+
+        var icon_038623277a656ba6dacdcccc0bdad072 = L.AwesomeMarkers.icon({
+            markerColor: "red",
+            iconColor: "white",
+            icon: "flag",
+            prefix: "glyphicon",
+            extraClasses: "fa-rotate-0",
+        });
+
+        var popup_456a29e931340945fe3d575567657043 = L.popup({ maxWidth: "100%" });
+        var html_3c4685e8927e3f25488091bbd3866ba4 = $(`<div style="width: 100%; height: 100%;">Tujuan: pantai</div>`)[0];
+        popup_456a29e931340945fe3d575567657043.setContent(html_3c4685e8927e3f25488091bbd3866ba4);
+        marker_cb04b8bd4f2cd534f5d0e0907196aba6.bindPopup(popup_456a29e931340945fe3d575567657043);
+        marker_cb04b8bd4f2cd534f5d0e0907196aba6.setIcon(icon_038623277a656ba6dacdcccc0bdad072);
+
+        // Main Route (blue)
+        var mainRouteCoordinates = [
+            [-3.7991464, 102.2841029], [-3.7993772, 102.2843524], [-3.7994735, 102.2846513],
+            [-3.7996569, 102.2846228], [-3.8006477, 102.2838834], [-3.8008367, 102.283625],
+            [-3.8012226, 102.2831931], [-3.8017025, 102.2826534], [-3.8017726, 102.2825649],
+            [-3.8026486, 102.2815784], [-3.8031299, 102.2807148], [-3.803189, 102.2801732],
+            [-3.8030826, 102.2796365], [-3.8024744, 102.2787463], [-3.8020396, 102.277997],
+            [-3.8019074, 102.277697], [-3.8017616, 102.2773551], [-3.8016763, 102.2769925],
+            [-3.8016727, 102.2767362], [-3.8016606, 102.2764794], [-3.8016555, 102.2763691],
+            [-3.8016694, 102.2750059], [-3.8010119, 102.2742565], [-3.8008344, 102.2738671],
+            [-3.8007173, 102.2734616], [-3.8005985, 102.2731174], [-3.8004622, 102.2726415],
+            [-3.8003824, 102.2724048], [-3.800321, 102.2722893], [-3.8003422, 102.2722438],
+            [-3.8002617, 102.2719679], [-3.8001225, 102.2715279], [-3.7987443, 102.268454],
+            [-3.7973875, 102.2661435], [-3.7972522, 102.2660923], [-3.7972176, 102.265872],
+            [-3.7973166, 102.2657913], [-3.7962203, 102.2649998], [-3.7953487, 102.2644128],
+            [-3.7945029, 102.2638408], [-3.7927402, 102.2616638], [-3.792744, 102.2614259],
+            [-3.7927459, 102.2611552], [-3.7927283, 102.2608802], [-3.7927178, 102.2606288],
+            [-3.7927002, 102.26024], [-3.7926889, 102.2600615], [-3.7926849, 102.2600027],
+            [-3.7926801, 102.2599325], [-3.792671, 102.2598008], [-3.7926469, 102.2595781],
+            [-3.7925115, 102.2578535], [-3.7922239, 102.2559875], [-3.7920781, 102.2556231],
+            [-3.7919387, 102.2553526], [-3.7905819, 102.2539088], [-3.7904683, 102.2537182],
+            [-3.7904554, 102.2526444], [-3.7904162, 102.2525206], [-3.789988, 102.2518862],
+            [-3.7892794, 102.2510561], [-3.789033, 102.2507381], [-3.7888545, 102.2501658],
+            [-3.7877324, 102.248866], [-3.7874211, 102.2486681]
+        ];
+
+        var mainRoute = L.polyline(mainRouteCoordinates, {
+            color: "#4285F4",
+            weight: 6,
+            opacity: 1,
+            smoothFactor: 1.0
+        }).addTo(map_7032d3261294eb65dc0b8e3df8f84131);
+
+        // Congested segments (red)
+        var congestedSegments = [
+            [[-3.8001225, 102.2715279], [-3.7987443, 102.268454]],
+            [[-3.7987443, 102.268454], [-3.7973875, 102.2661435]],
+            [[-3.7927402, 102.2616638], [-3.792744, 102.2614259]],
+            [[-3.7925115, 102.2578535], [-3.7922239, 102.2559875]],
+            [[-3.7919387, 102.2553526], [-3.7905819, 102.2539088]]
+        ];
+
+        congestedSegments.forEach(segment => {
+            L.polyline(segment, {
+                color: "#FF0000",
+                weight: 6,
+                opacity: 1,
+                smoothFactor: 1.0
+            }).addTo(map_7032d3261294eb65dc0b8e3df8f84131);
+        });
+
+        // Alternative Route (green dashed)
+        var altRouteCoordinates = [
+            [-3.7991464, 102.2841029], [-3.7993772, 102.2843524], [-3.7994735, 102.2846513],
+            [-3.7996569, 102.2846228], [-3.8006477, 102.2838834], [-3.8008367, 102.283625],
+            [-3.8012226, 102.2831931], [-3.8017025, 102.2826534], [-3.8017726, 102.2825649],
+            [-3.8026486, 102.2815784], [-3.8031299, 102.2807148], [-3.803189, 102.2801732],
+            [-3.8030826, 102.2796365], [-3.8024744, 102.2787463], [-3.8020396, 102.277997],
+            [-3.8019074, 102.277697], [-3.8017616, 102.2773551], [-3.8016763, 102.2769925],
+            [-3.8016727, 102.2767362], [-3.8016606, 102.2764794], [-3.8016555, 102.2763691],
+            [-3.8016694, 102.2750059], [-3.8010119, 102.2742565], [-3.8008344, 102.2738671],
+            [-3.8007173, 102.2734616], [-3.8005985, 102.2731174], [-3.8004622, 102.2726415],
+            [-3.8003824, 102.2724048], [-3.800321, 102.2722893], [-3.8003422, 102.2722438],
+            [-3.8004243, 102.2722062], [-3.7999693, 102.2705504], [-3.7996629, 102.2697931],
+            [-3.7988751, 102.2684061], [-3.7997842, 102.268268], [-3.8002016, 102.2682143],
+            [-3.8005561, 102.2681987], [-3.8004272, 102.2678083], [-3.8002926, 102.2675014],
+            [-3.8001199, 102.267228], [-3.8000204, 102.2670705], [-3.7996287, 102.2665439],
+            [-3.7998619, 102.2662953], [-3.7994245, 102.2657084], [-3.7992832, 102.2652437],
+            [-3.799063, 102.2653285], [-3.7985196, 102.2655072], [-3.7981521, 102.2656444],
+            [-3.7975258, 102.2658718], [-3.7974177, 102.2657886], [-3.7973166, 102.2657913],
+            [-3.7962203, 102.2649998], [-3.7953487, 102.2644128], [-3.7945029, 102.2638408],
+            [-3.7947186, 102.2632691], [-3.7948977, 102.2627042], [-3.7949339, 102.2625487],
+            [-3.7949466, 102.2625058], [-3.7950169, 102.2622536], [-3.7951373, 102.2618902],
+            [-3.7951855, 102.2617293], [-3.7953688, 102.2611579], [-3.7955915, 102.2606476],
+            [-3.7956775, 102.2604055], [-3.7957166, 102.2601948], [-3.7955381, 102.2594414],
+            [-3.7951693, 102.2590229], [-3.7945404, 102.2583845], [-3.7941684, 102.2579219],
+            [-3.7939374, 102.257707], [-3.7938457, 102.2575958], [-3.7937091, 102.257393],
+            [-3.7935221, 102.2571668], [-3.7930194, 102.256636], [-3.7926393, 102.2562972],
+            [-3.7922239, 102.2559875], [-3.7920781, 102.2556231], [-3.7919387, 102.2553526],
+            [-3.7923057, 102.2545068], [-3.7924147, 102.2542193], [-3.7926126, 102.2537032],
+            [-3.7925117, 102.2532825], [-3.7924773, 102.2532091], [-3.7921052, 102.2527864],
+            [-3.7904962, 102.2525558], [-3.7904162, 102.2525206], [-3.789988, 102.2518862],
+            [-3.7892794, 102.2510561], [-3.789033, 102.2507381], [-3.7888545, 102.2501658],
+            [-3.7877324, 102.248866], [-3.7874211, 102.2486681]
+        ];
+
+        var altRoute = L.polyline(altRouteCoordinates, {
+            color: "#01A43F",
+            weight: 5,
+            dashArray: "10,10",
+            opacity: 1,
+            smoothFactor: 1.0
+        }).addTo(map_7032d3261294eb65dc0b8e3df8f84131);
+    </script>
+</body>
+</html>
